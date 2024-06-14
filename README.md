@@ -3,7 +3,7 @@
 node md2sql.js <tablename> <databasetype> <delimiter>
 ```
 
- `<databasetype>` currently supported
+- `<databasetype>` currently supported
 1. `MySQL`
 2. `Oracle`
 3. `PostgreSQL`(default if not mentioned explicitly) 
@@ -64,7 +64,7 @@ INSERT INTO EMP (Id,Name,Country) VALUES (1,'Rahul Gaikwad','India');
 INSERT INTO EMP (Id,Name,Country) VALUES (2,'Sayli Bachan','America');
 ```
 
-### Future Scope
+#### Future Scope
 - [ ] Adding SQLite support
 - [ ] Adding Date datatype support
 - [ ] Rewriting in python
