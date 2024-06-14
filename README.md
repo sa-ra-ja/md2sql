@@ -41,6 +41,6 @@ value3 value4
 > [!NOTE]
 > Press `Ctrl+D` on newline to end the input
 
-## Future Scope/Ideas
-- [ ] Adding SQLite support
+### Future Scope/Ideas
+- [X] Adding SQLite support
 - [ ] Adding Date datatype support
