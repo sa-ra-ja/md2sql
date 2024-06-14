@@ -13,7 +13,12 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 ## Details
 - Detection of datatypes is done using first row of table.(*i.e.2nd row of actual input as first row is considered as header*)
 - Autodetection of input format and delimiters.
-  - ### Precedence :(Markdown Table,custom delimiter,`,`csv,`|`pipe,` `space)
+  - ### Precedence :
+    - Markdown Table
+    - custom delimiter
+    - `,`csv
+    - `|`pipe
+    - ` `space
     1. Markdown table
     ```
     |head1|head2|
