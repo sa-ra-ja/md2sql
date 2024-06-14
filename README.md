@@ -10,8 +10,9 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 1. `MySQL`
 2. `Oracle`
 3. `PostgreSQL`(default)
-
-Autodetection of datatypes is done using first row of table.(i.e.2nd row of actual input as first row is considered as header)
+## Features
+- Autodetection of datatypes is done using first row of table.(i.e.2nd row of actual input as first row is considered as header)
+- Autodetection of input format and delimiter
 ### Ideal input formats as per their precedence :
 1. Markdown table
 ```
