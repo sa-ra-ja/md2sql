@@ -1,5 +1,6 @@
 ## Introduction
-A javascript to convert MarkDown Tables data,`,`comma,`|`pipe or ` `space separated data into SQL queries(DDL,DML).
+A javascript to convert MD Tables data into SQL queries(DDL,DML).
+Added support for `,`comma,`|`pipe ,` `space or custom delimiter separated data
 ## Prerequisite
 [Nodejs Download](https://nodejs.org/en/download/prebuilt-installer)
 ## How to run?
