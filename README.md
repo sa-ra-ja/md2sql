@@ -1,2 +1,5 @@
-# md2sql
-Generates queries from Markdown Tables.
+## How to run?
+```
+node md2sql.js <tablename> <databasetype> <delimiter>
+```
+
