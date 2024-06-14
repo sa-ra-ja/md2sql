@@ -5,7 +5,6 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 
 
 
-
 `<databasetype>` currently supported
 1. `MySQL`
 2. `Oracle`
@@ -40,3 +39,5 @@ head1 head2
 value1 value2
 value3 value4
 ```
+> [!NOTE]
+> Press `Ctrl+D` on newline to end the input
