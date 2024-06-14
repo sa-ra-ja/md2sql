@@ -7,7 +7,9 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 1. `MySQL`
 2. `Oracle`
 3. `PostgreSQL`(default)
+
 Autodetection of datatypes is done using first row of table.
+
 Autodetection of input format precedence
 - Markdown table
 ```
