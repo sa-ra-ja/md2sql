@@ -19,6 +19,7 @@ node md2sql.js <tablename> <databasetype> <delimiter>
     - `,`csv
     - `|`pipe
     - ` `space
+    #### Input Examples
     1. Markdown table
     ```
     |head1|head2|
