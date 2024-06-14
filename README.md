@@ -52,7 +52,7 @@ node md2sql.js EMP
 > 2,Sayli Bachan,America
 ```
 *output* :
-```
+```sql
 [
   [ 'Id', 'Name', 'Country' ],
   [ '1', 'Rahul Gaikwad', 'India' ],
