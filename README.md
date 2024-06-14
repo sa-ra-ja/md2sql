@@ -41,6 +41,8 @@ value3 value4
 > [!NOTE]
 > Press `Ctrl+D` on newline to end the input
 
-### Future Scope/Ideas
+### Future Scope
 - [ ] Adding SQLite support
 - [ ] Adding Date datatype support
+- [ ] Rewriting in python
+- [ ] Integrating in website as a tool
