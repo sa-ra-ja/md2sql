@@ -42,5 +42,5 @@ value3 value4
 > Press `Ctrl+D` on newline to end the input
 
 ### Future Scope/Ideas
-- [X] Adding SQLite support
+- [ ] Adding SQLite support
 - [ ] Adding Date datatype support
