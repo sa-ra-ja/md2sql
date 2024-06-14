@@ -47,7 +47,7 @@ node md2sql.js <tablename> <databasetype> <delimiter>
     value3 value4
     ```
 > [!NOTE]
-> > Press `Ctrl+D` on newline to end the input
+> Press `Ctrl+D` on newline to end the input
 ## Example
 ```
 node md2sql.js EMP
