@@ -4,7 +4,9 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 ```
 ### Arguments:
 `<tablename>`:Name of your table
+
 `<databasetype>`:MySQL,Oracle or PostgreSQL(default)
+
 `<delimiter`:`,`,`|`,`:` or anything
 
 
@@ -19,8 +21,6 @@ node md2sql.js <tablename> <databasetype> <delimiter>
     |value1|value2|
     |value3|value4|
     ```
-    > [!NOTE]
-    > Press `Ctrl+D` on newline to end the input
     2. Custom `<delimiter>` if passed any
     4. `,`csv
     ```
@@ -40,7 +40,8 @@ node md2sql.js <tablename> <databasetype> <delimiter>
     value1 value2
     value3 value4
     ```
-
+> [!NOTE]
+> > Press `Ctrl+D` on newline to end the input
 ## Example
 ```
 node md2sql.js EMP
