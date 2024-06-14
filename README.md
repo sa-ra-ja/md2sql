@@ -20,8 +20,8 @@ Autodetection of datatypes is done using first row of table.(i.e.2nd row of actu
 |value1|value2|
 |value3|value4|
 ```
-2. `<delimiter>`optional argument if passed any
-3. `,`csv
+2. Custom `<delimiter>` if passed any
+4. `,`csv
 ```
 head1,head2
 value1,value2
