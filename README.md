@@ -2,17 +2,16 @@
 ```
 node md2sql.js <tablename> <databasetype> <delimiter>
 ```
+### Arguments:
+`<tablename>`:Name of your table
+`<databasetype>`:MySQL,Oracle or PostgreSQL(default)
+`<delimiter`:`,`,`|`,`:` or anything
 
 
-
-## Features
-- Autodetection of datatypes is done using first row of table.(i.e.2nd row of actual input as first row is considered as header)
-  - `<databasetype>` currently supported are
-    1. MySQL
-    2. Oracle
-    3. PostgreSQL(*default if not mentioned explicitly*) 
-- Autodetection of input format and delimiter
-  - ### Precedence :
+## Details
+- Detection of datatypes is done using first row of table.(*i.e.2nd row of actual input as first row is considered as header*)
+- Autodetection of input format and delimiters.
+  - ### Precedence :(Markdown Table,`<delimiter>`,`,`csv,`|`pipe,` `space)
     1. Markdown table
     ```
     |head1|head2|
@@ -20,6 +19,8 @@ node md2sql.js <tablename> <databasetype> <delimiter>
     |value1|value2|
     |value3|value4|
     ```
+    > [!NOTE]
+    > Press `Ctrl+D` on newline to end the input
     2. Custom `<delimiter>` if passed any
     4. `,`csv
     ```
@@ -39,9 +40,8 @@ node md2sql.js <tablename> <databasetype> <delimiter>
     value1 value2
     value3 value4
     ```
-> [!NOTE]
-> Press `Ctrl+D` on newline to end the input
-### Example
+
+## Example
 ```
 node md2sql.js EMP
 ```
@@ -65,7 +65,7 @@ INSERT INTO EMP (Id,Name,Country) VALUES (2,'Sayli Bachan','America');
 ```
 
 
-#### Future Scope
+## Future Scope
 - [ ] Adding SQLite support
 - [ ] Adding Date datatype support
 - [ ] Rewriting in python
