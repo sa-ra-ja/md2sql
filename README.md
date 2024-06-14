@@ -41,6 +41,29 @@ value3 value4
 > [!NOTE]
 > Press `Ctrl+D` on newline to end the input
 
+### Example
+```
+node md2sql.js EMP
+```
+*input* :
+```
+> Id,Name,Country
+> 1,Rahul Gaikwad,India
+> 2,Sayli Bachan,America
+```
+*output* :
+```
+[
+  [ 'Id', 'Name', 'Country' ],
+  [ '1', 'Rahul Gaikwad', 'India' ],
+  [ '2', 'Sayli Bachan', 'America' ]
+]
+[ 'number', 'string', 'string' ]
+CREATE TABLE EMP (Id INT,Name TEXT,Country TEXT);
+INSERT INTO EMP (Id,Name,Country) VALUES (1,'Rahul Gaikwad','India');
+INSERT INTO EMP (Id,Name,Country) VALUES (2,'Sayli Bachan','America');
+```
+
 ### Future Scope
 - [ ] Adding SQLite support
 - [ ] Adding Date datatype support
