@@ -6,7 +6,7 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 
 
 
-<databasetype> currently supported
+`<databasetype>` currently supported
 1. `MySQL`
 2. `Oracle`
 3. `PostgreSQL`(default)
