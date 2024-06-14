@@ -1,3 +1,5 @@
+## Prerequisite
+[Nodejs](https://nodejs.org/en)
 ## How to run?
 ```
 node md2sql.js <tablename> <databasetype> <delimiter>
