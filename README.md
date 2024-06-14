@@ -11,8 +11,8 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 2. `Oracle`
 3. `PostgreSQL`(default)
 
-> Autodetection of datatypes is done using first row of table.(i.e.Actual 2nd row of input as first row is considered as header)
-### **Precedence** for autodetection of ideal input formats :
+Autodetection of datatypes is done using first row of table.(i.e.2nd row of actual input as first row is considered as header)
+### Ideal input formats as per their precedence :
 1. Markdown table
 ```
 |head1|head2|
