@@ -2,16 +2,17 @@
 ```
 node md2sql.js <tablename> <databasetype> <delimiter>
 ```
-*`<value>` are optional arguments*
 
-`<databasetype>`currently supported
+
+
+
+<databasetype> currently supported
 1. `MySQL`
 2. `Oracle`
 3. `PostgreSQL`(default)
 
-Autodetection of datatypes is done using first row of table.
-
-Autodetection of input format precedence:
+> Autodetection of datatypes is done using first row of table.(i.e.Actual 2nd row of input as first row is considered as header)
+### **Precedence** for autodetection of ideal input formats :
 1. Markdown table
 ```
 |head1|head2|
