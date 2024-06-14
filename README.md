@@ -34,7 +34,7 @@ head1|head2
 value1|value2
 value3|value4
 ```
-5. ` `whitespace or tab
+5. ` `whitespace or `  ` tab
 ```
 head1 head2
 value1 value2
