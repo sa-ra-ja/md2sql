@@ -7,7 +7,7 @@ node md2sql.js <tablename> <databasetype> <delimiter>
 
 `<databasetype>`:MySQL,Oracle or PostgreSQL(default)
 
-`<delimiter`:`,`,`|`,`:` or anything
+`<delimiter>`:,,|,: or anything
 
 
 ## Details
