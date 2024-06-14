@@ -1,5 +1,5 @@
 ## Introduction
-A standalone javascript to convert MarkDown Tables,csv,pipe separated data,space separated data into SQL queries(DDL,DML).
+**A javascript to convert MarkDown Tables,csv,pipe separated data,space separated data into SQL queries(DDL,DML).**
 ## Prerequisite
 [Nodejs Download](https://nodejs.org/en/download/prebuilt-installer)
 ## How to run?
