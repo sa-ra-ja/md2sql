@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Markdown/CSV to SQL Converter with DB & Delimiter</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      max-width: 800px;
+    }
+    textarea, select, input[type="text"] {
+      width: 100%;
+      box-sizing: border-box;
+      margin-bottom: 12px;
+      font-family: monospace;
+      font-size: 14px;
+      padding: 8px;
+    }
+    pre {
+      background-color: #f0f0f0;
+      border: 1px solid #ddd;
+      padding: 10px;
+      height: 230px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+      margin-bottom: 10px;
+      font-family: monospace;
+    }
+    button {
+      margin-right: 10px;
+      padding: 8px 16px;
+      font-size: 14px;
+      cursor: pointer;
+    }
+    label {
+      font-weight: bold;
+      display: block;
+      margin-bottom: 4px;
+    }
+textarea {
+  width: 100%;
+  height: 180px;   /* <-- This controls the vertical size */
+  font-family: monospace;
+  font-size: 14px;
+  margin-bottom: 10px;
+  padding: 8px;
+  white-space: pre-wrap;
+}
+
+
+  </style>
+</head>
+<body>
+  <h1>Markdown/CSV to SQL Converter</h1>
+
+  <label for="inputData">Input Markdown Table or Delimited Data:</label>
+  <textarea id="inputData" placeholder="Paste your markdown or CSV/pipe/space delimited data here"></textarea>
+
+  <label for="tableName">Table Name:</label>
+  <input type="text" id="tableName" placeholder="Enter the SQL table name" value="MY_TABLE" />
+
+  <label for="selectDb">Select Database Type:</label>
+  <select id="selectDb">
+    <option value="mysql">MySQL</option>
+    <option value="postgresql">PostgreSQL</option>
+    <option value="oracle">Oracle</option>
+    <!-- Add more as needed -->
+  </select>
+
+  <label for="delimiter">Delimiter (optional; leave blank for autodetect):</label>
+  <input type="text" id="delimiter" placeholder="e.g. , or | or tab (type tab here)" />
+
+  <button onclick="convert()">Convert to SQL</button>
+
+  <h2>Generated SQL</h2>
+  <pre id="outputSQL" aria-live="polite"></pre>
+
+  <button onclick="copySQL()">Copy SQL</button>
+  <button onclick="saveSQL()">Save as .sql</button>
+
+  <script>
+    // Supported database syntax handlers
+    const dbSyntaxes = {
+      mysql: {
+        typeMap: (type) => {
+          switch(type) {
+            case 'INT': return 'INT';
+            case 'FLOAT': return 'FLOAT';
+            case 'BOOLEAN': return 'BOOLEAN';
+            default: return 'TEXT';
+          }
+        },
+        createTable: (tableName, headers, types) => {
+          let cols = headers.map((h, i) => '`' + h + '` ' + dbSyntaxes.mysql.typeMap(types[i]));
+          return `CREATE TABLE \`${tableName}\` (\n  ${cols.join(',\n  ')}\n);`;
+        }
+      },
+      postgresql: {
+        typeMap: (type) => {
+          switch(type) {
+            case 'INT': return 'INTEGER';
+            case 'FLOAT': return 'REAL';
+            case 'BOOLEAN': return 'BOOLEAN';
+            default: return 'TEXT';
+          }
+        },
+        createTable: (tableName, headers, types) => {
+          let cols = headers.map((h, i) => '"' + h + '" ' + dbSyntaxes.postgresql.typeMap(types[i]));
+          return `CREATE TABLE "${tableName}" (\n  ${cols.join(',\n  ')}\n);`;
+        }
+      },
+      oracle: {
+        typeMap: (type) => {
+          switch(type) {
+            case 'INT': return 'NUMBER';
+            case 'FLOAT': return 'FLOAT';
+            case 'BOOLEAN': return 'NUMBER(1)';
+            default: return 'VARCHAR2(4000)';
+          }
+        },
+        createTable: (tableName, headers, types) => {
+          let cols = headers.map((h, i) => '"' + h.toUpperCase() + '" ' + dbSyntaxes.oracle.typeMap(types[i]));
+          return `CREATE TABLE "${tableName.toUpperCase()}" (\n  ${cols.join(',\n  ')}\n);`;
+        }
+      }
+      // Add more databases and syntax here as needed
+    };
+
+    // Detect data type for a single value (simplified)
+    function detectDataType(value) {
+      if (/^\d+$/.test(value)) return 'INT';
+      if (/^\d*\.\d+$/.test(value)) return 'FLOAT';
+      if (/^(true|false)$/i.test(value)) return 'BOOLEAN';
+      return 'TEXT';
+    }
+
+    // Parse input splitting lines with custom or autodetected delimiter
+    function parseInput(data, delimiter) {
+      data = data.trim();
+      let lines = data.split('\n').filter(l => l.trim().length > 0);
+
+      // If no delimiter specified, try to autodetect:
+      if (!delimiter) {
+        // try markdown table detection (pipe | and markdown header)
+        if (lines[0].includes('|') && lines.length > 1 && /^[-\s|]+$/.test(lines[1])) {
+          // Markdown pipe table: clean pipes then split
+          lines = lines.filter((line, idx) => idx !== 1); // remove markdown separator line
+          return lines.map(line => line.trim().replace(/^\||\|$/g, '').split('|').map(s => s.trim()));
+        }
+
+        // else guess delimiter by the most frequent char in header line
+        const commonDelimiters = [',', '|', '\t', ';', ' '];
+        let counts = commonDelimiters.map(d => (lines[0].split(d).length - 1));
+        let maxCount = Math.max(...counts);
+        delimiter = maxCount > 0 ? commonDelimiters[counts.indexOf(maxCount)] : ',';
+      } else {
+        if (delimiter.toLowerCase() === 'tab') delimiter = '\t'; // support literal 'tab'
+      }
+
+      // Split lines with the given or detected delimiter and trim
+      return lines.map(line => line.split(delimiter).map(cell => cell.trim()));
+    }
+
+    // Escape single quotes in SQL strings
+    function escapeSQLString(str) {
+      return str.replace(/'/g, "''");
+    }
+
+    // Compose SQL INSERT statement for a row depending on DB type
+    function composeInsert(tableName, headers, row, types, dbType) {
+      const vals = row.map((val, i) => {
+        if (types[i] === 'INT' || types[i] === 'FLOAT') {
+          return val || 'NULL';
+        } else if (types[i] === 'BOOLEAN') {
+          val = val.toLowerCase();
+          if (dbType === 'oracle') {
+            // Oracle uses number 0/1 usually
+            return (val === 'true' || val === '1') ? '1' : '0';
+          } else {
+            return (val === 'true' || val === '1') ? 'TRUE' : 'FALSE';
+          }
+        } else {
+          return `'${escapeSQLString(val || '')}'`;
+        }
+      }).join(', ');
+
+      switch(dbType) {
+        case 'mysql':
+          return `INSERT INTO \`${tableName}\` (${headers.map(h => '`'+h+'`').join(', ')}) VALUES (${vals});`;
+        case 'postgresql':
+          return `INSERT INTO "${tableName}" (${headers.map(h => '"'+h+'"').join(', ')}) VALUES (${vals});`;
+        case 'oracle':
+          return `INSERT INTO "${tableName.toUpperCase()}" (${headers.map(h => '"'+h.toUpperCase()+'"').join(', ')}) VALUES (${vals});`;
+        default:
+          return `INSERT INTO ${tableName} (${headers.join(', ')}) VALUES (${vals});`;
+      }
+    }
+
+    // Main conversion
+    function convert() {
+      const inputData = document.getElementById('inputData').value;
+      const tableNameRaw = document.getElementById('tableName').value.trim();
+      if (!tableNameRaw) {
+        alert('Table name is required');
+        return;
+      }
+      const tableName = tableNameRaw.replace(/\s+/g, '_'); // sanitize spaces
+
+      const dbType = document.getElementById('selectDb').value;
+      const delimiterInput = document.getElementById('delimiter').value.trim();
+
+      // Parse the data with delimiter override or autodetect
+      let rows;
+      try {
+        rows = parseInput(inputData, delimiterInput || null);
+      } catch(e) {
+        document.getElementById('outputSQL').textContent = 'Error parsing input: ' + e.message;
+        return;
+      }
+
+      if (rows.length < 2) {
+        document.getElementById('outputSQL').textContent = '-- Not enough data to convert. Input must have header + at least one row.';
+        return;
+      }
+
+      const headers = rows[0];
+      const sampleRow = rows[1];
+      // detect data types column-wise based on the 2nd row
+      const types = sampleRow.map(detectDataType);
+
+      // Generate CREATE TABLE statement
+      const createStmt = dbSyntaxes[dbType]?.createTable(tableName, headers, types) || `CREATE TABLE ${tableName} (${headers.join(', ')});`;
+
+      // Generate INSERT statements
+      const inserts = rows.slice(1).map(row => composeInsert(tableName, headers, row, types, dbType));
+
+      const sqlOutput = [createStmt].concat(inserts).join('\n') + '\n';
+
+      document.getElementById('outputSQL').textContent = sqlOutput;
+    }
+
+    function copySQL() {
+      const sql = document.getElementById('outputSQL').textContent;
+      if (!sql) return alert('Nothing to copy');
+      navigator.clipboard.writeText(sql).then(() => alert('SQL copied to clipboard'), () => alert('Failed to copy SQL'));
+    }
+
+    function saveSQL() {
+      const sql = document.getElementById('outputSQL').textContent;
+      if (!sql) return alert('Nothing to save');
+      const blob = new Blob([sql], { type: 'text/sql' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = 'output.sql';
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }
+  </script>
+</body>
+</html>
+
